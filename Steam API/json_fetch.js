@@ -9,10 +9,10 @@ fetch('api_fetch.php')
 function formatLastPlayed(timestamp) {
     if (!timestamp) return "Never played"; // Handle cases where the timestamp is missing or 0
     const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
-    return date.toLocaleDateString("en-US", { // Customize format
-        weekday: "long", // Full name of the day (e.g., Monday)
+    return date.toLocaleDateString("en-US", {
+        weekday: "long", // Full name of the day 
         year: "numeric",
-        month: "long", // Full month name (e.g., January)
+        month: "long", // Full month name
         day: "numeric"
     });
 }
