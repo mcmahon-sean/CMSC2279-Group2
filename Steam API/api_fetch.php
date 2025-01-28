@@ -1,7 +1,7 @@
 <?php
 
-$apiKey = '5553B2F6E49998D47EB298C086A05084';
-$steamId = '76561198012120830';
+$apiKey = '';
+$steamId = '';
 
 // URLs for the two API endpoints
 $gameStatsUrl = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=$apiKey&steamid=$steamId&include_appinfo=1&format=json";
