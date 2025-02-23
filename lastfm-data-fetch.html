@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last.fm Data Fetch</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { margin: 10px; padding: 10px; }
+        #output { margin-top: 20px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h2>Fetch Last.fm Data</h2>
+    <input type="text" id="username" placeholder="Enter Last.fm username">
+    <button onclick="fetchData()">Get Data</button>
+    <div id="output"></div>
+    
+    <script>
+        async function fetchData() {
+            const username = document.getElementById('username').value;
+            const apiKey = '1456c592b2d19dabd13468f0eee62dc9'; // Replace with your Last.fm API key
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            const userInfoUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`;
+            const topArtistsUrl = `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${username}&api_key=${apiKey}&format=json&limit=5`;
+            const recentTracksUrl = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=5`;
+            
+            try {
+                const [userInfoRes, topArtistsRes, recentTracksRes] = await Promise.all([
+                    fetch(userInfoUrl), fetch(topArtistsUrl), fetch(recentTracksUrl)
+                ]);
+                
+                const userInfo = await userInfoRes.json();
+                const topArtists = await topArtistsRes.json();
+                const recentTracks = await recentTracksRes.json();
+                
+                document.getElementById('output').innerHTML = `
+                    <h3>User Info</h3>
+                    <p><strong>Username:</strong> ${userInfo.user.name}</p>
+                    <p><strong>Playcount:</strong> ${userInfo.user.playcount}</p>
+                    <p><strong>Country:</strong> ${userInfo.user.country}</p>
+                    
+                    <h3>Top Artists</h3>
+                    <ul>
+                        ${topArtists.topartists.artist.map(artist => `<li>${artist.name} (${artist.playcount} plays)</li>`).join('')}
+                    </ul>
+                    
+                    <h3>Recent Tracks</h3>
+                    <ul>
+                        ${recentTracks.recenttracks.track.map(track => `<li>${track.artist['#text']} - ${track.name}</li>`).join('')}
+                    </ul>
+                `;
+            } catch (error) {
+                document.getElementById('output').innerHTML = '<p>Error fetching data. Please check the username and try again.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
